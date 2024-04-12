@@ -12,6 +12,11 @@ Generate the proof:
     make sudoku.proof
 ```
 
+Verify the proof:
+```sh
+    make verify
+```
+
 Clean:
 ```sh
     make clean
