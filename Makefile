@@ -6,6 +6,9 @@ TEXT_ENTROPY := "Hello World"
 %.proof:
 	@$(MAKE) CIRCOM_FILE=$* BUILD_JS_DIR=$(BUILD_DIR)/$*_js build-circom ceremony-run
 
+%.build:
+	@$(MAKE) CIRCOM_FILE=$* BUILD_JS_DIR=$(BUILD_DIR)/$*_js build-circom
+
 # Compile Circom files for a given project
 build-circom: $(BUILD_DIR)/$(CIRCOM_FILE).r1cs $(BUILD_DIR)/$(CIRCOM_FILE).wasm $(BUILD_DIR)/$(CIRCOM_FILE).sym
 	@echo "Built $(CIRCOM_FILE) successfully."
