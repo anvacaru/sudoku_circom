@@ -2,6 +2,7 @@
 BUILD_DIR := .build
 INPUT_FILE := $(shell pwd)/src/input.json
 TEXT_ENTROPY := "Hello World"
+
 # Default rule for building a circuit from a .circom file
 %.proof:
 	@$(MAKE) CIRCOM_FILE=$* BUILD_JS_DIR=$(BUILD_DIR)/$*_js build-circom ceremony-run
@@ -32,7 +33,11 @@ ceremony-run:
 	snarkjs zkey export verificationkey $(CIRCOM_FILE)_0001.zkey verification_key.json 
 	snarkjs groth16 prove $(CIRCOM_FILE)_0001.zkey witness.wtns proof.json public.json
 
+# Verify
+verify:
+	snarkjs groth16 verify verification_key.json public.json proof.json
+
 clean:
 	rm -rf $(BUILD_DIR) *.zkey *.ptau *.wtns *.json
 
-.PHONY: build-circom ceremony-run clean
+.PHONY: build-circom ceremony-run verify clean
