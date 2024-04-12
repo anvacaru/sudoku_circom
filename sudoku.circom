@@ -1,5 +1,26 @@
 pragma circom 2.0.0;
 
+template CheckInRange() {
+    signal input in;
+    signal v[10];
+    v[0] <== 1;
+    for (var i = 1; i <= 9; i++){
+        v[i] <== v[i-1] * (in - i);
+    }
+    v[9] === 0;
+}
+
+template PermutationCheck(){
+    signal input in[9];
+    signal v[10];
+    v[0] <== 1;
+    var product = 1 * 2 * 3 * 4 * 5 * 6 * 7 * 8 * 9;
+    for (var i = 1; i <= 9; i++){
+        v[i] <== v[i-1] * (in[i-1]);
+    }
+    v[9] === product;
+}
+
 template Sudoku() {
     signal input P[9][9];
     signal input Q[9][9];
@@ -12,29 +33,28 @@ template Sudoku() {
     }
 
     // Check that all numbers in Q are in [1,9]
+    //             assert(Q[i][j] >= 1);
+    //            assert(Q[i][j] <= 9);
     for (var i = 0; i < 9; i++){
         for (var j = 0; j < 9; j++){
-            assert(Q[i][j] >= 1);
-            assert(Q[i][j] <= 9);
+            CheckInRange()(in <== Q[i][j]);
         }
     }
 
     // Check that no number repeats on a line
+    // assert(Q[row][i] != Q[row][j]);
     for (var row = 0; row < 9; row++){
-        for (var i = 0; i < 9; i++){
-            for( var j = i + 1; j < 9; j++){
-                assert(Q[row][i] != Q[row][j]);
-            }
-        }
+            PermutationCheck()(in <== Q[row]);
     }
 
     // Check that no number repeats on a column
-    for (var column = 0; column < 9; column++){
+    // assert(Q[i][col] != Q[j][col]);
+    for (var col = 0; col < 9; col++){
+        var column[9];
         for (var i = 0; i < 9; i++){
-            for( var j = i + 1; j < 9; j++){
-                assert(Q[i][column] != Q[j][column]);
-            }
+            column[i] = Q[i][col];
         }
+        PermutationCheck()(in <== column);
     }
 
     // Define 9 arrays with the elements of each sub-square
@@ -54,13 +74,10 @@ template Sudoku() {
     var squares [9][9]=[square_1, square_2, square_3, square_4, square_5, square_6, square_7, square_8, square_9];
 
     // Assert that for each square array, elements do not repeat.
+    // assert(squares[idx][i]!=squares[idx][j]);
     for(var idx = 0; idx < 9; idx++) {
-        for (var i = 0; i < 9; i++){
-            for( var j = i + 1; j < 9; j++){
-                assert(squares[idx][i]!=squares[idx][j]);
-            }
-        }
+        PermutationCheck()(in <== squares[idx]);
     }
 }
 
-component main = Sudoku();
+component main{public[P]} = Sudoku();
