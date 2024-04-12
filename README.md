@@ -1,5 +1,22 @@
 # ZK Challenge for the Bucharest Hackathon (Last Update: 2024/4/10)
 
+**How to run:**
+
+Circom build:
+```sh
+    make sudoku.build
+```
+
+Generate the proof:
+```sh
+    make sudoku.proof
+```
+
+Clean:
+```sh
+    make clean
+```
+
 **Title**:
 Sudoku in Zero Knowledge
 
